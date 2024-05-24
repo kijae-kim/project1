@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>매핑</title>
+    <style>
+        /* a {
+            text-decoration-line: none;
+            color: #396b0b;
+            font-weight: bold;
+        } */
+
+        .search {
+            padding: 10px;
+            background-color: #396b0b;
+        }
+
+        .box {
+            margin: 0 auto;
+            text-align: center;
+            width: 180px;
+            height: 20px;
+            left: 24px;
+            top: 88px;
+            border: 2px solid white;
+            border-radius: 5%;
+            padding: 3px;
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: space-evenly
+        }
+
+        #cat_container {
+            text-align: center;
+            position: absoulte;
+            /* 화면의 고정된 위치에 배치 */
+            z-index: 9999;
+            /* 다른 요소들 위에 배치 */
+            background-color: rgba(255, 255, 255, 0.1);
+            /* 배경색 설정 */
+            padding: 3px 7px;
+            /* 여백 설정 */
+            border: 1px solid #ccc;
+            /* 테두리 설정 */
+            border-radius: 5px;
+            /* 모서리 둥글게 */
+            width: 28%;
+        }
+
+        #map {
+            position: absolute;
+            z-index: -1;
+        }
+
+        .category-menu {
+            width: 80%;
+            display: flex;
+            flex-wrap: wrap;
+            /* flex-direction: column; */
+            margin-top: 10px;
+            /* 버튼과 메뉴 사이의 간격 */
+        }
+
+        .category-btn {
+            padding: 8px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            flex: 0 0 100px;
+            margin: 3px auto;
+        }
+
+        .category-btn.active {
+            background-color: gray;
+            /* 활성화된 버튼의 배경색 */
+            color: #fff;
+            /* 활성화된 버튼의 텍스트 색 */
+        }
+
+        .category-menu.hidden {
+            display: none;
+        }
+    </style>
+    <!-- <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=93fe91f9703244ec1348e78a5a418d68"></script> -->
+    <script>
+        window.kakao=window.kakao||{},window.kakao.maps=window.kakao.maps||{},window.daum&&window.daum.maps?window.kakao.maps=window.daum.maps:(window.daum=window.daum||{},window.daum.maps=window.kakao.maps),function(){function a(){if(o.length){n(s[o.shift()],a).start()}else e()}function n(a,n){var e=document.createElement("script");return e.onload=n,e.onreadystatechange=function(){/loaded|complete/.test(this.readyState)&&n()},{start:function(){e.src=a||"",
+document.getElementsByTagName("head")[0].appendChild(e),e=null}}}function e(){for(;i[0];)i.shift()();t.readyState=2}var t=kakao.maps=kakao.maps||{};if(void 0===t.readyState)t.onloadcallbacks=[],t.readyState=0;else if(2===t.readyState)return;t.URI_FUNC={ROADMAP:function(a,n,e){return"map.daumcdn.net/map_k3f_prod/bakery/image_map_png/PNGSD01/v23_9iubp/"+e+"/"+n+"/"+a+".png"},HYBRID:function(a,n,e){
+return"map.daumcdn.net/map_k3f_prod/bakery/image_map_png/PNGSD_SKYH01/v22_yizaj/"+e+"/"+n+"/"+a+".png"},ROADVIEW:function(a,n,e){return"map.daumcdn.net/map_k3f_prod/bakery/image_map_png/PNGSD_RV01/v16_o9kb2/"+e+"/"+n+"/"+a+".png"},BICYCLE:function(a,n,e){return"map.daumcdn.net/map_k3f_prod/bakery/image_map_png/PNGSD_BIKE01/v10_0614m/"+e+"/"+n+"/"+a+".png"},USE_DISTRICT:function(a,n,e){return"map.daumcdn.net/map_k3f_prod/bakery/image_map_png/PNGSD_CAD01/v15_xiqhg/"+e+"/"+n+"/"+a+".png"},
+SR:function(a,n,e){return"map.daumcdn.net/map_k3f_prod/bakery/image_map_png/PNGSD_SR01/v28_r51ed/"+e+"/"+n+"/"+a+".png"},BBOUND:function(a,n,e){return"map.daumcdn.net/map_k3f_prod/bakery/image_map_png/PNGSD_BBOUND01/v13_kqik1/"+e+"/"+n+"/"+a+".png"},HBOUND:function(a,n,e){return"map.daumcdn.net/map_k3f_prod/bakery/image_map_png/PNGSD_HBOUND01/v14_xpsfk/"+e+"/"+n+"/"+a+".png"},TRAFFIC:function(a,n,e){return"r.maps.daum-img.net/mapserver/file/realtimeroad/L"+e+"/"+n+"/"+a+".png"},
+ROADMAP_HD:function(a,n,e){return"map.daumcdn.net/map_k3f_prod/bakery/image_map_png/PNG01/v29_9jh91/"+e+"/"+n+"/"+a+".png"},HYBRID_HD:function(a,n,e){return"map.daumcdn.net/map_k3f_prod/bakery/image_map_png/PNG_SKYH01/v21_uvgfk/"+e+"/"+n+"/"+a+".png"},ROADVIEW_HD:function(a,n,e){return"map.daumcdn.net/map_k3f_prod/bakery/image_map_png/PNG_RV01/v16_fs8a9/"+e+"/"+n+"/"+a+".png"},BICYCLE_HD:function(a,n,e){
+return"map.daumcdn.net/map_k3f_prod/bakery/image_map_png/PNG_BIKE01/v10_h1s0g/"+e+"/"+n+"/"+a+".png"},USE_DISTRICT_HD:function(a,n,e){return"map.daumcdn.net/map_k3f_prod/bakery/image_map_png/PNG_CAD01/v18_n66np/"+e+"/"+n+"/"+a+".png"},SR_HD:function(a,n,e){return"map.daumcdn.net/map_k3f_prod/bakery/image_map_png/PNGSD_SR01/v28_r51ed/"+e+"/"+n+"/"+a+".png"},BBOUND_HD:function(a,n,e){return"map.daumcdn.net/map_k3f_prod/bakery/image_map_png/PNG_BBOUND01/v13_pryja/"+e+"/"+n+"/"+a+".png"},
+HBOUND_HD:function(a,n,e){return"map.daumcdn.net/map_k3f_prod/bakery/image_map_png/PNG_HBOUND01/v14_jb1ze/"+e+"/"+n+"/"+a+".png"},TRAFFIC_HD:function(a,n,e){return"r.maps.daum-img.net/mapserver/file/realtimeroad_hd/L"+e+"/"+n+"/"+a+".png"}},t.VERSION={ROADMAP_SUFFIX:"",SKYVIEW_VERSION:"160114",SKYVIEW_HD_VERSION:"160107"},t.RESOURCE_PATH={ROADVIEW_AJAX:"//t1.daumcdn.net/roadviewjscore/core/css3d/200204/standard/1580795088957/roadview.js",
+ROADVIEW_CSS:"//t1.daumcdn.net/roadviewjscore/core/openapi/standard/240118/roadview.js"};for(var r,p="https:"==location.protocol?"https:":"http:",m="",d=document.getElementsByTagName("script"),_=d.length;r=d[--_];)if(/\/(beta-)?dapi\.kakao\.com\/v2\/maps\/sdk\.js\b/.test(r.src)||/\/map_js_init\/open4\.test\.js\b/.test(r.src)||/\/map_js_init\/open4\.cbt\.js\b/.test(r.src)){m=r.src;break}d=null;var i=t.onloadcallbacks,o=["v3"],c="",s={v3:p+"//t1.daumcdn.net/mapjsapi/js/main/4.4.15/kakao.js",
+services:p+"//t1.daumcdn.net/mapjsapi/js/libs/services/1.0.2/services.js",drawing:p+"//t1.daumcdn.net/mapjsapi/js/libs/drawing/1.2.6/drawing.js",clusterer:p+"//t1.daumcdn.net/mapjsapi/js/libs/clusterer/1.0.9/clusterer.js"},u=function(a){var n={};return a.replace(/[?&]+([^=&]+)=([^&]*)/gi,function(a,e,t){n[e]=t}),n}(m);c=u.appkey,c&&(t.apikey=c),t.version="4.4.15";var g=u.libraries;if(g&&(o=o.concat(g.split(","))),"false"!==u.autoload){for(var _=0,k=o.length;_<k;_++)!function(a){
+a&&document.write('<script charset="UTF-8" src="'+a+'"><\/script>')}(s[o[_]]);t.readyState=2}t.load=function(n){switch(i.push(n),t.readyState){case 0:t.readyState=1,a();break;case 2:e()}}}();
+    </script>
+</head>
+
+<body>
+    <div class="phone"
+        style="width: 360px; height: 640px; background-color:white; position: relative; overflow: hidden; border: 1px solid black; z-index: 0;">
+        <header id="header" style="width: 100%; height: 10%; border-bottom: 1px solid black;">
+            <a href="/path/alarm">
+                <div id="alram" style="display: inline-block; 
+            background-image: url(../project_img/alram.PNG);
+            background-repeat: no-repeat;
+            background-size: contain;
+            width: 10%;
+            height: 65%;
+            margin: 8px 0 0 8px;"></div>
+            </a>
+            <a href="/path/introduce">
+                <div id="upper_menu" style="display: inline-block;
+            margin-top: 7px;
+            margin-right: 3px;
+            float: right;
+            width: 13%;
+            height: 70%;
+            background-image: url(../project_img/upper_menu.PNG);
+            background-repeat: no-repeat;
+            background-size: contain;"></div>
+            </a>
+        </header>
+
+        <main id="main" style="width: 100%; height: 73%;">
+            <div class="menu" style="background-color: #396b0b;
+            color: white;
+            height: 11%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center; /* 수평 가운데 정렬 */
+            align-items: center; /* 수직 가운데 정렬 */">
+                <div class="menu1" style="margin: 5px;
+                height: 75%;
+                width: 90%;
+                margin: 0 auto;
+                border-radius: 25px;
+                border : 1px solid white;">
+                    <h3 style="text-align: center;
+                    margin-top: 2%;">상담센터 검색</h3>
+                    <!-- 상담 테이터 가져와야함 -->
+                </div>
+
+            </div>
+
+            <body onload="initMap()" style="position: relative;">
+
+                <div id="map" style="width:100%;height:65%;"></div>
+                <!-- 카테고리 버튼 -->
+                <div id="cat_container">
+                    <button id="toggle-category-menu">카테고리</button>
+                    <div class="category-menu" id="categoryMenu">
+                        <button class="category-btn" data-category="1"
+                            data-icon="../project_img/marker/청소년.png">청소년</button>
+                        <button class="category-btn" data-category="2"
+                            data-icon="../project_img/marker/heart.png">정신건강</button>
+                        <button class="category-btn" data-category="3"
+                            data-icon="../project_img/marker/성.png">성고민</button>
+                        <button class="category-btn" data-category="4"
+                            data-icon="../project_img/marker/가정.png">가족</button>
+                        <button class="category-btn" data-category="5"
+                            data-icon="../project_img/marker/가정.png">가정</button>
+                        <button class="category-btn" data-category="6"
+                            data-icon="../project_img/marker/성.png">성폭력</button>
+                        <button class="category-btn" data-category="7"
+                            data-icon="../project_img/marker/garden.png">해바라기</button>
+                        <!-- 나머지 카테고리 버튼들도 유사하게 추가 -->
+                    </div>
+                </div>
+                <script>
+                    t_c_m = document.getElementById('toggle-category-menu')
+                    t_c_m.addEventListener('click', function () {
+                        const categoryMenu = document.getElementById('categoryMenu');
+
+                        categoryMenu.classList.toggle('hidden');
+                        this.blur()
+                    });
+                    const categoryButtons = document.querySelectorAll('.category-btn');
+                    categoryButtons.forEach(button => {
+                        button.addEventListener('click', function () {
+                            const categoryMenu = document.getElementById('categoryMenu');
+                            categoryMenu.classList.toggle('hidden');
+
+                            const text = this.textContent;
+                            t_c_m.textContent = text
+                        });
+                    });
+
+                    let combinedCenters;
+                    let infowindow;
+                    let map;
+                    function initMap() {
+                        let mapContainer = document.getElementById('map');
+                        let mapOption = {
+                            center: new kakao.maps.LatLng(37.5665, 126.9780), // 초기 중심 위치 (서울)
+                            level: 7 // 지도 확대 레벨
+                        };
+                        map = new kakao.maps.Map(mapContainer, mapOption);
+                        infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
+                        fetch('../CenterDB/combinedCenters.json')
+                            .then(response => response.json())
+                            .then(data => {
+                                combinedCenters = data;
+                                loadMarkers();
+                            })
+                            .catch(error => console.error('Error fetching JSON data:', error));
+                    }
+                    function loadMarkers() {
+                        const categoryButtons = document.querySelectorAll('.category-btn');
+                        const markers = [];
+                        categoryButtons.forEach(button => {
+                            button.addEventListener('click', function () {
+                                const category = this.dataset.category;
+                                const icon = this.dataset.icon;
+                                markers.forEach(marker => marker.setMap(null));
+                                markers.length = 0;
+                                combinedCenters.forEach(location => {
+                                    if (location.kind === category) {
+                                        const markerPosition = new kakao.maps.LatLng(location.lat, location.lot);
+                                        const marker = new kakao.maps.Marker({
+                                            position: markerPosition,
+                                            map: map,
+                                            title: location.centerName,
+                                            image: new kakao.maps.MarkerImage(icon, new kakao.maps.Size(30, 35))
+                                        });
+                                        markers.push(marker);
+                                        kakao.maps.event.addListener(marker, 'click', function () {
+                                            displayInfowindow(marker, location);
+                                        });
+                                    }
+                                });
+                            });
+                        });
+                    }
+                    function displayInfowindow(marker, location) {
+                        let content = '<div style="padding:5px;">' +
+                            '<strong>' + location.centerName + '</strong><br>' +
+                            '<a href="' + location.homepage + '" target="_blank">사이트 바로가기</a>' +
+                            '</div>';
+                        infowindow.setContent(content);
+                        infowindow.open(map, marker);
+                    }
+                </script>
+            </body>
+        </main>
+
+        <footer id="footer"
+            style="display: flex; flex-direction: column-reverse; width: 100%; height: 16%; border-top: 1px solid black;">
+            <div id="menu3" style="display: inline-block; width: 17%; height: 100%;">
+                <a href="/path/3"><img src="../project_img/menu3.PNG"
+                        style="width: 24%; position: absolute; margin-left: 10%; margin: -23% 0 0 36%; border-radius: 270px; z-index: 10;"></a>
+            </div>
+            <div id="lower_menu" style="width: 100%; height: 85%; border-top: 1px solid black;">
+                <a href="/path/1">
+                    <div id="menu1" style="display: inline-block; width: 17%; height: 100%;">
+                        <img src="../project_img/menu1.PNG" style="margin-left: 13%;">
+                        <p style="display: inline-block; position: absolute; margin: 13% 0 0 -7%; font-size: 0.9em">홈
+                        </p>
+                    </div>
+                </a>
+                <a href="/path/2">
+                    <div id="menu2" style="display: inline-block; width: 17%; height: 100%;">
+                        <img src="../project_img/menu2.PNG" style="margin-top: 5%; margin-left: 10%;">
+                        <p style="display: inline-block; position: absolute; margin: 16% 0 0 -11%; font-size: 0.8em;">
+                            자가진단</p>
+                    </div>
+                </a>
+                <a href="/path/4">
+                    <div id="menu4" style="display: inline-block; width: 17%; height: 100%; margin-left: 25%;">
+                        <img src="../project_img/menu4.PNG" style="margin-left: 10%;">
+                        <p style="display: inline-block; position: absolute; margin: 13% 0 0 -12%; font-size: 0.8em;">
+                            상담관리
+                        </p>
+                    </div>
+                </a>
+                <a href="/path/5">
+                    <div id="menu5" style="display: inline-block; width: 17%; height: 100%;">
+                        <img src="../project_img/menu5.PNG" style="margin-left: 10%; margin-top: 20%; width: 75%;">
+                        <p style="position: absolute; margin: 3% 0 0 0; font-size: 0.7em;">마이페이지
+                        </p>
+                    </div>
+                </a>
+            </div>
+        </footer>
+
+</body>
+
+</html>
